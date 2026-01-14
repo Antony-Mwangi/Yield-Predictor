@@ -1,66 +1,104 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useRouter } from "next/navigation";
+
+export default function HomePage() {
+  const router = useRouter();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div style={styles.container}>
+      {/* Hero Section */}
+      <h1 style={styles.title}>AI Maize Yield Predictor</h1>
+      <p style={styles.subtitle}>
+        Use artificial intelligence to predict maize yield and get smart
+        farming recommendations based on soil and weather data.
+      </p>
+
+      {/* How it works */}
+      <div style={styles.howItWorks}>
+        <div style={styles.step}>
+          <h3>1. Enter Data</h3>
+          <p>Provide soil nutrients, rainfall, and temperature.</p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div style={styles.step}>
+          <h3>2. AI Analysis</h3>
+          <p>Our AI model analyzes your inputs.</p>
         </div>
-      </main>
+
+        <div style={styles.step}>
+          <h3>3. Get Prediction</h3>
+          <p>Receive yield estimates and recommendations.</p>
+        </div>
+      </div>
+
+      {/* Call to Action */}
+      <div style={styles.buttons}>
+        <button
+          style={styles.loginBtn}
+          onClick={() => router.push("/login")}
+        >
+          Login
+        </button>
+
+        <button
+          style={styles.registerBtn}
+          onClick={() => router.push("/register")}
+        >
+          Register
+        </button>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: 40,
+    textAlign: "center",
+    maxWidth: 900,
+    margin: "auto",
+  },
+  title: {
+    fontSize: 36,
+    marginBottom: 15,
+    color: "green",
+  },
+  subtitle: {
+    fontSize: 18,
+    marginBottom: 40,
+  },
+  howItWorks: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 20,
+    marginBottom: 50,
+  },
+  step: {
+    border: "1px solid #ddd",
+    padding: 20,
+    borderRadius: 8,
+    flex: 1,
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 20,
+  },
+  loginBtn: {
+    padding: "12px 25px",
+    backgroundColor: "green",
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 16,
+  },
+  registerBtn: {
+    padding: "12px 25px",
+    backgroundColor: "white",
+    color: "green",
+    border: "2px solid green",
+    cursor: "pointer",
+    fontSize: 16,
+  },
+};
