@@ -9,11 +9,10 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
 
-  // Handle scroll effect for a more modern feel
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
-    const token = localStorage.getItem("token");
+    const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
     setIsAuth(!!token);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -32,7 +31,6 @@ export default function Header() {
 
   return (
     <>
-      {/* 1. TOP INFO BAR (New Content) */}
       <div className="top-bar">
         <div className="top-bar-content">
           <span>🌦️ Nairobi: 24°C - Optimal for Maize Growth</span>
@@ -83,25 +81,40 @@ export default function Header() {
 
           .logo-area {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 15px;
             cursor: pointer;
           }
+
+          /* Styling for your specific logo image */
+          .logo-img {
+            height: 45px; 
+            width: auto;
+            object-fit: contain;
+            display: block;
+          }
+
+          .logo-text-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          }
+
           .logo {
             color: #166534;
             font-size: 1.4rem;
             font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             margin: 0;
+            line-height: 1.1;
           }
+
           .tagline {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #16a34a;
             font-weight: 700;
-            margin-top: -2px;
+            margin-top: 2px;
           }
 
           .nav-menu {
@@ -110,7 +123,6 @@ export default function Header() {
             align-items: center;
           }
 
-          /* Nav Links with Underline Animation */
           .nav-link {
             cursor: pointer;
             font-size: 14px;
@@ -119,17 +131,7 @@ export default function Header() {
             position: relative;
             padding: 5px 0;
           }
-          .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #22c55e;
-            transition: width 0.3s ease;
-          }
-          .nav-link:hover::after { width: 100%; }
+          
           .nav-link:hover { color: #166534; }
 
           .auth-buttons {
@@ -151,7 +153,6 @@ export default function Header() {
             cursor: pointer;
             transition: all 0.2s;
           }
-          .logout-btn:hover { background: #dc2626; color: white; }
 
           .menu-toggle {
             display: none;
@@ -162,11 +163,6 @@ export default function Header() {
             border: none;
           }
           .bar { width: 22px; height: 2px; background: #166534; border-radius: 2px; }
-
-          @media (max-width: 1000px) {
-            .nav-menu { gap: 15px; }
-            .top-bar { display: none; }
-          }
 
           @media (max-width: 850px) {
             .menu-toggle { display: flex; }
@@ -185,18 +181,20 @@ export default function Header() {
             .auth-buttons {
               border-left: none;
               padding-left: 0;
-              width: 100%;
-              flex-direction: column;
             }
-            .nav-link { font-size: 18px; width: 100%; text-align: center; }
           }
         `}</style>
 
         <div className="logo-area" onClick={() => navigateTo("/")}>
-          <h2 className="logo">
-            <span>🌽</span> MaizeWise AI
-          </h2>
-          <span className="tagline">Smart Farming Assistant</span>
+          <img 
+            src="/prediction1.PNG" 
+            alt="MaizeWise AI Logo" 
+            className="logo-img" 
+          />
+          <div className="logo-text-group">
+            <h2 className="logo">MaizeWise AI</h2>
+            <span className="tagline">Smart Farming Assistant</span>
+          </div>
         </div>
 
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
@@ -206,10 +204,8 @@ export default function Header() {
         </button>
 
         <nav className="nav-menu">
-          {/* COMMON LINKS */}
           <span className="nav-link" onClick={() => navigateTo("/")}>Home</span>
           <span className="nav-link" onClick={() => navigateTo("/resources")}>Farming Guide</span>
-          {/* <span className="nav-link" onClick={() => navigateTo("/pricing")}>Pro Plans</span> */}
 
           {!isAuth ? (
             <div className="auth-buttons">
@@ -223,8 +219,7 @@ export default function Header() {
           ) : (
             <div className="auth-buttons">
               <span className="nav-link" onClick={() => navigateTo("/dashboard")}>Dashboard</span>
-              <span className="nav-link" onClick={() => navigateTo("/predict")}>New Prediction</span>
-              <span className="nav-link" onClick={() => navigateTo("/history")}>Archives</span>
+              <span className="nav-link" onClick={() => navigateTo("/predict")}>Predict</span>
               <button onClick={logout} className="logout-btn">
                 Sign Out
               </button>

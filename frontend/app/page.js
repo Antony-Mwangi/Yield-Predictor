@@ -70,7 +70,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      {/* 1. HERO SECTION */}
+      
       <section className="hero">
         <h1>Precision Agriculture <br/> for the Modern Farmer</h1>
         <p>
@@ -90,7 +90,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. CORE FEATURES */}
+      
       <section className="section">
         <div className="section-header">
           <h2>Intelligent Farm Management</h2>
@@ -115,10 +115,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. MAIZE GROWTH KNOWLEDGE CENTER */}
-      
-
-[Image of maize growth stages]
+     
 
       <div className="knowledge-bg">
         <section className="section">
@@ -144,7 +141,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* 4. WHY USE THIS APP? */}
+      
       <section className="section">
         <div style={{display: 'flex', flexWrap: 'wrap', gap: '50px', alignItems: 'center'}}>
           <div style={{flex: 1, minWidth: '300px'}}>
@@ -173,7 +170,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. FINAL CTA */}
+      
       <section className="section" style={{textAlign: 'center', background: '#166534', borderRadius: '40px', color: 'white', marginBottom: '50px'}}>
         <h2 style={{color: 'white', fontSize: '2.8rem'}}>Secure Your Next Harvest</h2>
         <p style={{fontSize: '1.2rem', marginBottom: '40px', opacity: 0.9}}>Create your account and run your first AI yield prediction in under 2 minutes.</p>
