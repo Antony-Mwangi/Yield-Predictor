@@ -209,7 +209,7 @@ export default function Header() {
           {/* COMMON LINKS */}
           <span className="nav-link" onClick={() => navigateTo("/")}>Home</span>
           <span className="nav-link" onClick={() => navigateTo("/resources")}>Farming Guide</span>
-          <span className="nav-link" onClick={() => navigateTo("/pricing")}>Pro Plans</span>
+          {/* <span className="nav-link" onClick={() => navigateTo("/pricing")}>Pro Plans</span> */}
 
           {!isAuth ? (
             <div className="auth-buttons">
