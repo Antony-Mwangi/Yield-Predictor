@@ -26,9 +26,9 @@ export default function Footer() {
             <li>
               <Link href="/predict" style={styles.link}>Predict Yield</Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/history" style={styles.link}>History</Link>
-            </li>
+            </li> */}
             <li>
               <Link href="/about" style={styles.link}>About</Link>
             </li>
