@@ -59,10 +59,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Divider */}
+      
       <div style={styles.divider}></div>
 
-      {/* Bottom */}
+    
       <p style={styles.copyright}>
         © {new Date().getFullYear()} AI Maize Yield Predictor. All rights reserved.
       </p>
