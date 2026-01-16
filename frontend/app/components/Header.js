@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image"; 
 
 export default function Header() {
   const [isAuth, setIsAuth] = useState(false);
@@ -12,7 +13,7 @@ export default function Header() {
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
-    const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+    const token = localStorage.getItem("token");
     setIsAuth(!!token);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -81,23 +82,21 @@ export default function Header() {
 
           .logo-area {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            align-items: center; /* Changed to center for horizontal alignment with image */
+            gap: 12px;
             cursor: pointer;
           }
 
-          /* Styling for your specific logo image */
+          /* New Logo Styling */
           .logo-img {
-            height: 45px; 
+            height: 40px; /* Adjust height as needed */
             width: auto;
             object-fit: contain;
-            display: block;
           }
 
           .logo-text-group {
             display: flex;
             flex-direction: column;
-            justify-content: center;
           }
 
           .logo {
@@ -105,9 +104,8 @@ export default function Header() {
             font-size: 1.4rem;
             font-weight: 900;
             margin: 0;
-            line-height: 1.1;
+            line-height: 1;
           }
-
           .tagline {
             font-size: 10px;
             text-transform: uppercase;
@@ -131,7 +129,17 @@ export default function Header() {
             position: relative;
             padding: 5px 0;
           }
-          
+          .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #22c55e;
+            transition: width 0.3s ease;
+          }
+          .nav-link:hover::after { width: 100%; }
           .nav-link:hover { color: #166534; }
 
           .auth-buttons {
@@ -153,6 +161,7 @@ export default function Header() {
             cursor: pointer;
             transition: all 0.2s;
           }
+          .logout-btn:hover { background: #dc2626; color: white; }
 
           .menu-toggle {
             display: none;
@@ -163,6 +172,11 @@ export default function Header() {
             border: none;
           }
           .bar { width: 22px; height: 2px; background: #166534; border-radius: 2px; }
+
+          @media (max-width: 1000px) {
+            .nav-menu { gap: 15px; }
+            .top-bar { display: none; }
+          }
 
           @media (max-width: 850px) {
             .menu-toggle { display: flex; }
@@ -181,11 +195,15 @@ export default function Header() {
             .auth-buttons {
               border-left: none;
               padding-left: 0;
+              width: 100%;
+              flex-direction: column;
             }
+            .nav-link { font-size: 18px; width: 100%; text-align: center; }
           }
         `}</style>
 
         <div className="logo-area" onClick={() => navigateTo("/")}>
+          
           <img 
             src="/prediction1.PNG" 
             alt="MaizeWise AI Logo" 
@@ -219,7 +237,8 @@ export default function Header() {
           ) : (
             <div className="auth-buttons">
               <span className="nav-link" onClick={() => navigateTo("/dashboard")}>Dashboard</span>
-              <span className="nav-link" onClick={() => navigateTo("/predict")}>Predict</span>
+              <span className="nav-link" onClick={() => navigateTo("/predict")}>New Prediction</span>
+              <span className="nav-link" onClick={() => navigateTo("/history")}>Archives</span>
               <button onClick={logout} className="logout-btn">
                 Sign Out
               </button>

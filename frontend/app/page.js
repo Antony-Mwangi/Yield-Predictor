@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function HomePage() {
   const router = useRouter();
@@ -47,9 +48,20 @@ export default function HomePage() {
 
         /* Feature Grid */
         .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .feature-card { padding: 40px; border-radius: 24px; background: #fff; border: 1px solid #e5e7eb; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .feature-card { padding: 40px; border-radius: 24px; background: #fff; border: 1px solid #e5e7eb; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-align: center; }
         .feature-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-color: #22c55e; }
-        .feature-card .icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+        
+        /* New Image Container for Feature Icons */
+        .feature-icon-wrapper {
+          width: 80px;
+          height: 80px;
+          margin: 0 auto 20px;
+          background: #f0fdf4;
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
 
         /* Knowledge Center */
         .knowledge-bg { background: #f0fdf4; border-radius: 40px; margin: 0 20px; }
@@ -70,7 +82,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      
+      {/* Hero Section */}
       <section className="hero">
         <h1>Precision Agriculture <br/> for the Modern Farmer</h1>
         <p>
@@ -90,7 +102,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      
+      {/* Feature Section with Images */}
       <section className="section">
         <div className="section-header">
           <h2>Intelligent Farm Management</h2>
@@ -98,25 +110,32 @@ export default function HomePage() {
         </div>
         <div className="feature-grid">
           <div className="feature-card">
-            <span className="icon">🧪</span>
+            <div className="feature-icon-wrapper">
+              <Image src="/soil-nutrients.PNG" alt="Soil icon" width={50} height={50} />
+            </div>
             <h3>Soil Nutrient Analysis</h3>
             <p>Understand the critical balance of Nitrogen, Phosphorus, and Potassium (NPK) required for your specific soil type.</p>
           </div>
+          
           <div className="feature-card">
-            <span className="icon">☁️</span>
+            <div className="feature-icon-wrapper">
+              <Image src="/climate.jpg" alt="Climate icon" width={50} height={50} />
+            </div>
             <h3>Climate Adaptation</h3>
             <p>Our AI adjusts yield expectations based on localized temperature fluctuations and seasonal rainfall averages.</p>
           </div>
+
           <div className="feature-card">
-            <span className="icon">📅</span>
+            <div className="feature-icon-wrapper">
+              <Image src="/history.png" alt="Tracking icon" width={50} height={50} />
+            </div>
             <h3>Historical Tracking</h3>
             <p>Store every season's data in our secure cloud to visualize growth trends and improvement over the years.</p>
           </div>
         </div>
       </section>
 
-     
-
+      {/* Knowledge Center */}
       <div className="knowledge-bg">
         <section className="section">
           <div className="section-header">
@@ -125,6 +144,7 @@ export default function HomePage() {
           </div>
           
           <div className="growth-stages">
+            
             <div className="stage-box">
               <h4>Vegetative (V1-Vn)</h4>
               <p>Critical for Nitrogen uptake. This stage determines the potential number of kernels per row.</p>
@@ -141,7 +161,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      
+      {/* Results Section */}
       <section className="section">
         <div style={{display: 'flex', flexWrap: 'wrap', gap: '50px', alignItems: 'center'}}>
           <div style={{flex: 1, minWidth: '300px'}}>
@@ -164,13 +184,14 @@ export default function HomePage() {
           </div>
           
           <div style={{flex: 1, minWidth: '300px', background: '#111827', color: 'white', padding: '40px', borderRadius: '24px'}}>
-             <h3 style={{color: '#4ade80'}}>Expert Tip 💡</h3>
-             <p>Did you know? Soil pH levels below 5.5 can lock up Phosphorus, making it unavailable to your maize, regardless of how much fertilizer you add. Our AI takes pH into account to suggest lime applications when necessary.</p>
+              <h3 style={{color: '#4ade80'}}>Expert Tip 💡</h3>
+              <p>Did you know? Soil pH levels below 5.5 can lock up Phosphorus, making it unavailable to your maize. Our AI takes pH into account to suggest lime applications when necessary.</p>
+              [Image showing how soil pH affects nutrient availability for plants]
           </div>
         </div>
       </section>
 
-      
+      {/* Final Call to Action */}
       <section className="section" style={{textAlign: 'center', background: '#166534', borderRadius: '40px', color: 'white', marginBottom: '50px'}}>
         <h2 style={{color: 'white', fontSize: '2.8rem'}}>Secure Your Next Harvest</h2>
         <p style={{fontSize: '1.2rem', marginBottom: '40px', opacity: 0.9}}>Create your account and run your first AI yield prediction in under 2 minutes.</p>
