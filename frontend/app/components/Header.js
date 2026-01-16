@@ -210,7 +210,7 @@ export default function Header() {
             className="logo-img" 
           />
           <div className="logo-text-group">
-            <h2 className="logo">AGRO FORECAST</h2>
+            <h2 className="logo">CORN-CAST</h2>
             <span className="tagline">Smart Farming Assistant</span>
           </div>
         </div>
