@@ -36,7 +36,7 @@ export default function Header() {
         <div className="top-bar-content">
           <span>🌦️ Nairobi: 24°C - Optimal for Maize Growth</span>
           <div className="top-links">
-            <span>Support: +254 700 000 000</span>
+            <span>Support: +254 711 668 298</span>
             <span className="divider">|</span>
             <span>English (UK)</span>
           </div>
@@ -206,11 +206,11 @@ export default function Header() {
           
           <img 
             src="/prediction1.PNG" 
-            alt="MaizeWise AI Logo" 
+            alt="AGRO FORECAST Logo"
             className="logo-img" 
           />
           <div className="logo-text-group">
-            <h2 className="logo">MaizeWise AI</h2>
+            <h2 className="logo">AGRO FORECAST</h2>
             <span className="tagline">Smart Farming Assistant</span>
           </div>
         </div>

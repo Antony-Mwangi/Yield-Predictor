@@ -10,7 +10,7 @@ export default function Footer() {
         <div style={styles.section}>
           <h4 style={styles.heading}>
             <span style={{ marginRight: "8px" }}></span> 
-            Maize<span>Wise</span> AI
+            AGRO<span>FORECAST</span> AI
           </h4>
           <p style={styles.text}>
             Revolutionizing agricultural productivity through precision data 
@@ -42,14 +42,14 @@ export default function Footer() {
           <h4 style={styles.heading}>Connect</h4>
           <p style={styles.text}>
             Email:{" "}
-            <a href="mailto:support@maizewise.ai" style={styles.highlightLink}>
-              support@maizewise.ai
+            <a href="mailto:antonymwangiw85@gmail.com" style={styles.highlightLink}>
+              antonymwangiw85@gmail.com
             </a>
           </p>
           <p style={styles.text}>
             Phone:{" "}
-            <a href="tel:+254700000000" style={styles.highlightLink}>
-              +254 700 000 000
+            <a href="tel:+254711668298" style={styles.highlightLink}>
+              +254 711 668 298
             </a>
           </p>
         </div>
