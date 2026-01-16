@@ -6,10 +6,10 @@ export default function Footer() {
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        {/* About Section */}
+        
         <div style={styles.section}>
           <h4 style={styles.heading}>
-            <span style={{ marginRight: "8px" }}>🌽</span> 
+            <span style={{ marginRight: "8px" }}></span> 
             Maize<span>Wise</span> AI
           </h4>
           <p style={styles.text}>
@@ -18,7 +18,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Navigation Section */}
+        
         <div style={styles.section}>
           <h4 style={styles.heading}>Quick Links</h4>
           <ul style={styles.list}>
@@ -37,7 +37,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Contact Section */}
+        
         <div style={styles.section}>
           <h4 style={styles.heading}>Connect</h4>
           <p style={styles.text}>
@@ -74,10 +74,10 @@ const styles = {
   footer: {
     padding: "60px 20px 40px",
     marginTop: 80,
-    backgroundColor: "#0f172a", // Deep Navy to match Header Top Bar
-    color: "#94a3b8", // Muted Slate
+    backgroundColor: "#0f172a",
+    color: "#94a3b8",
     fontFamily: "'Inter', sans-serif",
-    borderTop: "4px solid #10b981", // Emerald accent top border
+    borderTop: "4px solid #10b981",
   },
   container: {
     display: "flex",
@@ -92,7 +92,7 @@ const styles = {
   },
   heading: {
     marginBottom: 20,
-    color: "#ffffff", // Pure white for high contrast
+    color: "#ffffff", 
     fontSize: "18px",
     fontWeight: "800",
     letterSpacing: "-0.5px",
@@ -117,14 +117,14 @@ const styles = {
     transition: "color 0.2s ease",
   },
   highlightLink: {
-    color: "#10b981", // Emerald Green
+    color: "#10b981", 
     textDecoration: "none",
     fontWeight: "600",
   },
   divider: {
     margin: "40px auto 30px",
     maxWidth: 1100,
-    borderTop: "1px solid #1e293b", // Subtle dark divider
+    borderTop: "1px solid #1e293b", 
   },
   bottomSection: {
     maxWidth: 1100,
