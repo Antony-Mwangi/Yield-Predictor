@@ -10,7 +10,7 @@ export default function Footer() {
         <div style={styles.section}>
           <h4 style={styles.heading}>
             <span style={{ marginRight: "8px" }}></span> 
-            AGRO<span>FORECAST</span> AI
+            CORN<span>-CAST</span> 
           </h4>
           <p style={styles.text}>
             Revolutionizing agricultural productivity through precision data 
