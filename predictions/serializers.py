@@ -6,3 +6,5 @@ class PredictionSerializer(serializers.ModelSerializer):
         model = Prediction
         fields = '__all__'
         read_only_fields = ['user', 'yield_prediction', 'created_at']
+        
+        

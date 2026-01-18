@@ -82,7 +82,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      {/* Hero Section */}
+      
       <section className="hero">
         <h1>Precision Agriculture <br/> for the Modern Farmer</h1>
         <p>
@@ -102,7 +102,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Feature Section with Images */}
+      
       <section className="section">
         <div className="section-header">
           <h2>Intelligent Farm Management</h2>
@@ -135,7 +135,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Knowledge Center */}
+      
       <div className="knowledge-bg">
         <section className="section">
           <div className="section-header">
@@ -161,7 +161,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Results Section */}
+      
       <section className="section">
         <div style={{display: 'flex', flexWrap: 'wrap', gap: '50px', alignItems: 'center'}}>
           <div style={{flex: 1, minWidth: '300px'}}>
@@ -191,7 +191,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final Call to Action */}
+      
       <section className="section" style={{textAlign: 'center', background: '#166534', borderRadius: '40px', color: 'white', marginBottom: '50px'}}>
         <h2 style={{color: 'white', fontSize: '2.8rem'}}>Secure Your Next Harvest</h2>
         <p style={{fontSize: '1.2rem', marginBottom: '40px', opacity: 0.9}}>Create your account and run your first AI yield prediction in under 2 minutes.</p>
