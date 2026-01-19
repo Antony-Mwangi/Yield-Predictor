@@ -259,150 +259,123 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [dashboard, setDashboard] = useState(null);
-  const [predictions, setPredictions] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [dark, setDark] = useState(false);
-
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-  // -----------------------------
-  // Theme
-  // -----------------------------
-  const light = {
-    bg: "#F7FAFC",
-    card: "#FFFFFF",
-    text: "#1A202C",
-    muted: "#718096",
-    accent: "#2B6CB0",
-  };
+  const [user, setUser] = useState(null);
+  const [dashboard, setDashboard] = useState(null);
+  const [predictions, setPredictions] = useState([]);
+  const [selectedPrediction, setSelectedPrediction] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const darkTheme = {
-    bg: "#0F172A",
-    card: "#1E293B",
-    text: "#E5E7EB",
-    muted: "#94A3B8",
-    accent: "#60A5FA",
-  };
-
-  const theme = dark ? darkTheme : light;
-
-  // -----------------------------
-  // Effects
-  // -----------------------------
+  /* ---------------- AUTH CHECK ---------------- */
   useEffect(() => {
-    const saved = localStorage.getItem("darkMode");
-    if (saved === "true") setDark(true);
-
     if (!token) {
       router.push("/login");
       return;
     }
 
     Promise.all([
-      fetch("http://127.0.0.1:8000/api/auth/dashboard/", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(res => res.json()),
-
-      fetch("http://127.0.0.1:8000/api/predictions/history/", {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then(res => res.json()),
+      fetch("http://127.0.0.1:8000/api/auth/me/", authHeader()),
+      fetch("http://127.0.0.1:8000/api/auth/dashboard/", authHeader()),
+      fetch("http://127.0.0.1:8000/api/predictions/history/", authHeader()),
     ])
-      .then(([dash, preds]) => {
-        setDashboard(dash);
-        setPredictions(preds);
+      .then(async ([u, d, p]) => {
+        setUser(await u.json());
+        setDashboard(await d.json());
+        setPredictions(await p.json());
       })
       .finally(() => setLoading(false));
   }, []);
 
-  // -----------------------------
-  // CSV Export
-  // -----------------------------
-  const exportCSV = () => {
-    let csv = "Date,Yield\n";
-    predictions.forEach(p => {
-      csv += `${new Date(p.created_at).toLocaleDateString()},${p.yield_prediction}\n`;
-    });
+  /* ---------------- HELPERS ---------------- */
+  function authHeader() {
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+  }
+
+  function exportCSV() {
+    const rows = predictions.map(p => ({
+      date: p.created_at,
+      yield: p.yield_prediction,
+      rainfall: p.rainfall,
+      temperature: p.temperature,
+    }));
+
+    const csv =
+      "Date,Yield,Rainfall,Temperature\n" +
+      rows.map(r => Object.values(r).join(",")).join("\n");
 
     const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "yield-history.csv";
-    a.click();
-  };
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "predictions.csv";
+    link.click();
+  }
 
-  // -----------------------------
-  // Chart
-  // -----------------------------
-  const Chart = () => {
-    if (predictions.length === 0) return null;
-
-    const max = Math.max(...predictions.map(p => p.yield_prediction));
-    const points = predictions.map((p, i) => {
-      const x = (i / (predictions.length - 1)) * 100;
-      const y = 100 - (p.yield_prediction / max) * 100;
-      return `${x},${y}`;
-    });
-
-    return (
-      <svg viewBox="0 0 100 100" style={styles.chartSvg}>
-        <polyline
-          fill="none"
-          stroke={theme.accent}
-          strokeWidth="3"
-          points={points.join(" ")}
-        />
-      </svg>
-    );
-  };
-
-  if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
+  if (loading) return <div style={styles.loader}>Loading dashboard…</div>;
 
   return (
-    <div style={{ ...styles.page, background: theme.bg, color: theme.text }}>
-      {/* Dark Mode Toggle */}
-      <button
-        onClick={() => {
-          const next = !dark;
-          setDark(next);
-          localStorage.setItem("darkMode", next);
-        }}
-        style={{ ...styles.toggle, background: theme.card, color: theme.text }}
-      >
-        {dark ? "☀ Light" : "🌙 Dark"}
-      </button>
-
-      <h1 style={styles.title}>Welcome {dashboard?.username} 👋</h1>
-
-      {/* Summary Cards */}
-      <div style={styles.grid}>
-        <div style={{ ...styles.card, background: theme.card }}>
-          <h3>Total Predictions</h3>
-          <p style={styles.big}>{dashboard?.total_predictions}</p>
+    <div style={{ ...styles.page, ...(darkMode && styles.dark) }}>
+      {/* ---------- NAVBAR ---------- */}
+      <nav style={styles.nav}>
+        <h2>🌱 Smart Farming AI</h2>
+        <div>
+          <button onClick={() => setDarkMode(!darkMode)} style={styles.toggle}>
+            {darkMode ? "☀️ Light" : "🌙 Dark"}
+          </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              router.push("/login");
+            }}
+            style={styles.logout}
+          >
+            Logout
+          </button>
         </div>
+      </nav>
 
-        <div style={{ ...styles.card, background: theme.card }}>
-          <h3>Latest Yield</h3>
-          <p style={styles.big}>
-            {dashboard?.latest_yield ?? "—"} t/ha
-          </p>
-        </div>
-      </div>
+      {/* ---------- WELCOME ---------- */}
+      <section style={styles.welcome}>
+        <h1>Welcome back, {user?.username}</h1>
+        <p>Your farm performance at a glance</p>
+      </section>
 
-      {/* Chart */}
-      <div style={{ ...styles.card, background: theme.card }}>
+      {/* ---------- METRICS ---------- */}
+      <section style={styles.metrics}>
+        <Metric title="Latest Yield" value={dashboard.latest_yield ?? "—"} />
+        <Metric title="Total Predictions" value={dashboard.total_predictions} />
+        <Metric title="Soil Status" value="Good" />
+        <Metric title="Yield Trend" value="+ Improving" />
+      </section>
+
+      {/* ---------- CHART ---------- */}
+      <section style={styles.card}>
         <h3>Yield Trend</h3>
-        <Chart />
-      </div>
+        <svg width="100%" height="120">
+          {predictions.map((p, i) => (
+            <circle
+              key={i}
+              cx={20 + i * 40}
+              cy={100 - p.yield_prediction * 5}
+              r="4"
+              fill="#2f855a"
+            />
+          ))}
+        </svg>
+      </section>
 
-      {/* History */}
-      <div style={{ ...styles.card, background: theme.card }}>
-        <div style={styles.rowBetween}>
+      {/* ---------- HISTORY ---------- */}
+      <section style={styles.card}>
+        <div style={styles.historyHeader}>
           <h3>Prediction History</h3>
-          <button onClick={exportCSV} style={styles.exportBtn}>
+          <button onClick={exportCSV} style={styles.export}>
             Export CSV
           </button>
         </div>
@@ -411,8 +384,8 @@ export default function DashboardPage() {
           <thead>
             <tr>
               <th>Date</th>
-              <th>Yield (t/ha)</th>
-              <th></th>
+              <th>Yield</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -423,7 +396,7 @@ export default function DashboardPage() {
                 <td>
                   <button
                     style={styles.viewBtn}
-                    onClick={() => setSelected(p)}
+                    onClick={() => setSelectedPrediction(p)}
                   >
                     View
                   </button>
@@ -432,121 +405,116 @@ export default function DashboardPage() {
             ))}
           </tbody>
         </table>
-      </div>
+      </section>
 
-      {/* Modal */}
-      {selected && (
-        <div style={styles.modalOverlay} onClick={() => setSelected(null)}>
-          <div
-            style={{ ...styles.modal, background: theme.card }}
-            onClick={e => e.stopPropagation()}
-          >
-            <h3>Prediction Details</h3>
-            <p><b>Yield:</b> {selected.yield_prediction} t/ha</p>
-            <p><b>Rainfall:</b> {selected.rainfall} mm</p>
-            <p><b>Temperature:</b> {selected.temperature} °C</p>
-            <button style={styles.closeBtn} onClick={() => setSelected(null)}>
-              Close
-            </button>
+      {/* ---------- MODAL ---------- */}
+      {selectedPrediction && (
+        <div style={styles.modalOverlay} onClick={() => setSelectedPrediction(null)}>
+          <div style={styles.modal} onClick={e => e.stopPropagation()}>
+            <h3>Prediction Detail</h3>
+            <p>Yield: {selectedPrediction.yield_prediction}</p>
+            <p>Rainfall: {selectedPrediction.rainfall}</p>
+            <p>Temperature: {selectedPrediction.temperature}</p>
+            <button onClick={() => setSelectedPrediction(null)}>Close</button>
           </div>
         </div>
       )}
-
-      {/* Animations */}
-      <style jsx global>{`
-        table tr:hover {
-          background: rgba(100, 116, 139, 0.1);
-        }
-      `}</style>
     </div>
   );
 }
 
-// -----------------------------
-// Internal Styles
-// -----------------------------
+/* ---------- COMPONENTS ---------- */
+const Metric = ({ title, value }) => (
+  <div style={styles.metric}>
+    <h4>{title}</h4>
+    <p>{value}</p>
+  </div>
+);
+
+/* ---------- INTERNAL CSS ---------- */
 const styles = {
   page: {
     minHeight: "100vh",
-    padding: 24,
-    transition: "background 0.3s ease",
+    background: "#f7fafc",
+    padding: "20px",
+    fontFamily: "Segoe UI",
+    transition: "0.3s",
   },
-  title: {
-    textAlign: "center",
-    marginBottom: 24,
+  dark: {
+    background: "#1a202c",
+    color: "#edf2f7",
   },
-  grid: {
+  nav: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "20px",
+  },
+  toggle: {
+    marginRight: "10px",
+  },
+  logout: {
+    background: "#e53e3e",
+    color: "#fff",
+    padding: "6px 10px",
+  },
+  welcome: {
+    marginBottom: "20px",
+  },
+  metrics: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px,1fr))",
-    gap: 20,
-    marginBottom: 20,
+    gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+    gap: "15px",
+  },
+  metric: {
+    background: "#ffffff",
+    padding: "15px",
+    borderRadius: "10px",
+    textAlign: "center",
+    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+    transition: "0.3s",
   },
   card: {
-    borderRadius: 16,
-    padding: 20,
-    boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
-    animation: "fadeIn 0.5s ease",
+    background: "#ffffff",
+    padding: "20px",
+    borderRadius: "12px",
+    marginTop: "30px",
   },
-  big: {
-    fontSize: 32,
-    fontWeight: 700,
+  historyHeader: {
+    display: "flex",
+    justifyContent: "space-between",
   },
-  chartSvg: {
-    width: "100%",
-    height: 200,
-    marginTop: 12,
+  export: {
+    background: "#2f855a",
+    color: "#fff",
+    padding: "6px 10px",
   },
   table: {
     width: "100%",
+    marginTop: "15px",
     borderCollapse: "collapse",
-    marginTop: 12,
   },
   viewBtn: {
-    padding: "6px 12px",
-    borderRadius: 8,
-    border: "none",
-    cursor: "pointer",
-  },
-  exportBtn: {
-    padding: "6px 14px",
-    borderRadius: 999,
-    border: "none",
-    cursor: "pointer",
-  },
-  rowBetween: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  toggle: {
-    position: "fixed",
-    top: 16,
-    right: 16,
-    borderRadius: 999,
-    border: "none",
-    padding: "8px 14px",
-    cursor: "pointer",
+    background: "#3182ce",
+    color: "#fff",
+    padding: "5px 8px",
   },
   modalOverlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(0,0,0,0.5)",
+    background: "rgba(0,0,0,0.6)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   modal: {
-    padding: 24,
-    borderRadius: 16,
-    width: "90%",
-    maxWidth: 400,
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "10px",
+    width: "300px",
   },
-  closeBtn: {
-    marginTop: 12,
-    width: "100%",
-    padding: 10,
-    borderRadius: 10,
-    border: "none",
-    cursor: "pointer",
+  loader: {
+    textAlign: "center",
+    padding: "100px",
+    fontSize: "20px",
   },
 };
