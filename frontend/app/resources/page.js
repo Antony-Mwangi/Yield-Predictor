@@ -13,7 +13,7 @@ export default function ResourcesPage() {
           margin: 0 auto;
           padding: 40px 20px;
           font-family: 'Inter', sans-serif;
-          color: #333;
+          color: #333333ff;
           line-height: 1.6;
         }
 
@@ -111,7 +111,7 @@ export default function ResourcesPage() {
         <p>Master the science of soil testing and climate tracking to get the most out of your AI predictions.</p>
       </section>
 
-      {/* SOIL SAMPLING GUIDE */}
+    
       <section className="resource-section">
         <h2 className="section-title">How to Take a Soil Sample</h2>
         <p>Proper sampling is the foundation of accurate yield prediction. Follow this "Zig-Zag" method for the best results.</p>
@@ -137,7 +137,7 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      {/* NUTRIENT REFERENCE */}
+      
       <section className="resource-section">
         <h2 className="section-title">Understanding NPK Values</h2>
         <p>Maize requires different nutrients at different stages. Use this table to understand your AI input values.</p>
@@ -172,7 +172,7 @@ export default function ResourcesPage() {
         </table>
       </section>
 
-      {/* CLIMATE GUIDE */}
+      
       <section className="resource-section">
         <h2 className="section-title">Rainfall & Temperature</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'center' }}>
@@ -190,7 +190,7 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      {/* CALL TO ACTION */}
+      
       <div className="cta-box">
         <h3>Ready to test your soil data?</h3>
         <p>Now that you know how to collect your metrics, run a prediction to see your estimated harvest.</p>

@@ -169,9 +169,7 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      
-
-[Image of maize nutrient deficiency chart]
+    
 
 
       <div className="details-section">
