@@ -1,18 +1,21 @@
 // "use client";
 
-// import { useState, useEffect } from "react";
+// import { useEffect, useState } from "react";
 // import { useRouter } from "next/navigation";
 
 // export default function DashboardPage() {
-//   const [dashboard, setDashboard] = useState(null);
-//   const [predictions, setPredictions] = useState([]);
-//   const [selected, setSelected] = useState(null);
-//   const [loading, setLoading] = useState(true);
 //   const router = useRouter();
-
 //   const token =
 //     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
+//   const [user, setUser] = useState(null);
+//   const [dashboard, setDashboard] = useState(null);
+//   const [predictions, setPredictions] = useState([]);
+//   const [selectedPrediction, setSelectedPrediction] = useState(null);
+//   const [darkMode, setDarkMode] = useState(false);
+//   const [loading, setLoading] = useState(true);
+
+//   /* ---------------- AUTH CHECK ---------------- */
 //   useEffect(() => {
 //     if (!token) {
 //       router.push("/login");
@@ -20,235 +23,247 @@
 //     }
 
 //     Promise.all([
-//       fetch("http://127.0.0.1:8000/api/auth/dashboard/", {
-//         headers: { Authorization: `Bearer ${token}` },
-//       }).then(r => r.json()),
-
-//       fetch("http://127.0.0.1:8000/api/predictions/history/", {
-//         headers: { Authorization: `Bearer ${token}` },
-//       }).then(r => r.json()),
-//     ]).then(([dash, preds]) => {
-//       setDashboard(dash);
-//       setPredictions(preds);
-//       setLoading(false);
-//     });
+//       fetch("http://127.0.0.1:8000/api/auth/me/", authHeader()),
+//       fetch("http://127.0.0.1:8000/api/auth/dashboard/", authHeader()),
+//       fetch("http://127.0.0.1:8000/api/predictions/history/", authHeader()),
+//     ])
+//       .then(async ([u, d, p]) => {
+//         setUser(await u.json());
+//         setDashboard(await d.json());
+//         setPredictions(await p.json());
+//       })
+//       .finally(() => setLoading(false));
 //   }, []);
 
-//   const exportCSV = () => {
-//     const rows = [
-//       ["Yield", "Rainfall", "Temperature", "Date"],
-//       ...predictions.map(p => [
-//         p.yield_prediction,
-//         p.rainfall,
-//         p.temperature,
-//         new Date(p.created_at).toLocaleDateString(),
-//       ]),
-//     ];
+//   /* ---------------- HELPERS ---------------- */
+//   function authHeader() {
+//     return {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       },
+//     };
+//   }
 
-//     const csv = rows.map(r => r.join(",")).join("\n");
+//   function exportCSV() {
+//     const rows = predictions.map(p => ({
+//       date: p.created_at,
+//       yield: p.yield_prediction,
+//       rainfall: p.rainfall,
+//       temperature: p.temperature,
+//     }));
+
+//     const csv =
+//       "Date,Yield,Rainfall,Temperature\n" +
+//       rows.map(r => Object.values(r).join(",")).join("\n");
+
 //     const blob = new Blob([csv], { type: "text/csv" });
-//     const url = URL.createObjectURL(blob);
+//     const link = document.createElement("a");
+//     link.href = URL.createObjectURL(blob);
+//     link.download = "predictions.csv";
+//     link.click();
+//   }
 
-//     const a = document.createElement("a");
-//     a.href = url;
-//     a.download = "predictions.csv";
-//     a.click();
-//   };
-
-//   if (loading) return <p style={styles.center}>Loading...</p>;
+//   if (loading) return <div style={styles.loader}>Loading dashboard…</div>;
 
 //   return (
-//     <div style={styles.page}>
-//       {/* HEADER */}
-//       <header style={styles.header}>
+//     <div style={{ ...styles.page, ...(darkMode && styles.dark) }}>
+//       {/* ---------- NAVBAR ---------- */}
+//       <nav style={styles.nav}>
+//         <h2>🌱 Smart Farming AI</h2>
 //         <div>
-//           <h1>AI Maize Dashboard</h1>
-//           <p>{dashboard.username} · {dashboard.role}</p>
+//           <button onClick={() => setDarkMode(!darkMode)} style={styles.toggle}>
+//             {darkMode ? "☀️ Light" : "🌙 Dark"}
+//           </button>
+//           <button
+//             onClick={() => {
+//               localStorage.removeItem("token");
+//               router.push("/login");
+//             }}
+//             style={styles.logout}
+//           >
+//             Logout
+//           </button>
 //         </div>
-//         <button onClick={exportCSV} style={styles.btn}>
-//           Export CSV
-//         </button>
-//       </header>
+//       </nav>
 
-//       {/* ROLE BASED */}
-//       {dashboard.role === "admin" ? (
-//         <AdminPanel />
-//       ) : (
-//         <>
-//           {/* STATS */}
-//           <section style={styles.cards}>
-//             <Card title="Total Predictions" value={dashboard.total_predictions} />
-//             <Card title="Latest Yield" value={dashboard.latest_yield ?? "N/A"} />
-//           </section>
+//       {/* ---------- WELCOME ---------- */}
+//       <section style={styles.welcome}>
+//         <h1>Welcome back, {user?.username}</h1>
+//         <p>Your farm performance at a glance</p>
+//       </section>
 
-//           {/* CHART */}
-//           <section style={styles.section}>
-//             <h2>Yield Trend</h2>
-//             <YieldChart data={predictions} />
-//           </section>
+//       {/* ---------- METRICS ---------- */}
+//       <section style={styles.metrics}>
+//         <Metric title="Latest Yield" value={dashboard.latest_yield ?? "—"} />
+//         <Metric title="Total Predictions" value={dashboard.total_predictions} />
+//         <Metric title="Soil Status" value="Good" />
+//         <Metric title="Yield Trend" value="+ Improving" />
+//       </section>
 
-//           {/* TABLE */}
-//           <section style={styles.section}>
-//             <h2>Prediction History</h2>
-//             <table style={styles.table}>
-//               <thead>
-//                 <tr>
-//                   <th>Yield</th>
-//                   <th>Date</th>
-//                   <th>View</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {predictions.map(p => (
-//                   <tr key={p.id}>
-//                     <td>{p.yield_prediction}</td>
-//                     <td>{new Date(p.created_at).toLocaleDateString()}</td>
-//                     <td>
-//                       <button onClick={() => setSelected(p)} style={styles.link}>
-//                         Details
-//                       </button>
-//                     </td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           </section>
-//         </>
+//       {/* ---------- CHART ---------- */}
+//       <section style={styles.card}>
+//         <h3>Yield Trend</h3>
+//         <svg width="100%" height="120">
+//           {predictions.map((p, i) => (
+//             <circle
+//               key={i}
+//               cx={20 + i * 40}
+//               cy={100 - p.yield_prediction * 5}
+//               r="4"
+//               fill="#2f855a"
+//             />
+//           ))}
+//         </svg>
+//       </section>
+
+//       {/* ---------- HISTORY ---------- */}
+//       <section style={styles.card}>
+//         <div style={styles.historyHeader}>
+//           <h3>Prediction History</h3>
+//           <button onClick={exportCSV} style={styles.export}>
+//             Export CSV
+//           </button>
+//         </div>
+
+//         <table style={styles.table}>
+//           <thead>
+//             <tr>
+//               <th>Date</th>
+//               <th>Yield</th>
+//               <th>Action</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {predictions.map(p => (
+//               <tr key={p.id}>
+//                 <td>{new Date(p.created_at).toLocaleDateString()}</td>
+//                 <td>{p.yield_prediction}</td>
+//                 <td>
+//                   <button
+//                     style={styles.viewBtn}
+//                     onClick={() => setSelectedPrediction(p)}
+//                   >
+//                     View
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </section>
+
+//       {/* ---------- MODAL ---------- */}
+//       {selectedPrediction && (
+//         <div style={styles.modalOverlay} onClick={() => setSelectedPrediction(null)}>
+//           <div style={styles.modal} onClick={e => e.stopPropagation()}>
+//             <h3>Prediction Detail</h3>
+//             <p>Yield: {selectedPrediction.yield_prediction}</p>
+//             <p>Rainfall: {selectedPrediction.rainfall}</p>
+//             <p>Temperature: {selectedPrediction.temperature}</p>
+//             <button onClick={() => setSelectedPrediction(null)}>Close</button>
+//           </div>
+//         </div>
 //       )}
-
-//       {/* MODAL */}
-//       {selected && (
-//         <Modal onClose={() => setSelected(null)}>
-//           <h3>Prediction Details</h3>
-//           <pre style={styles.pre}>
-// {JSON.stringify(selected, null, 2)}
-//           </pre>
-//         </Modal>
-//       )}
 //     </div>
 //   );
 // }
 
-// /* ---------------- COMPONENTS ---------------- */
+// /* ---------- COMPONENTS ---------- */
+// const Metric = ({ title, value }) => (
+//   <div style={styles.metric}>
+//     <h4>{title}</h4>
+//     <p>{value}</p>
+//   </div>
+// );
 
-// function Card({ title, value }) {
-//   return (
-//     <div style={styles.card}>
-//       <h3>{title}</h3>
-//       <p style={styles.big}>{value}</p>
-//     </div>
-//   );
-// }
-
-// function YieldChart({ data }) {
-//   if (!data.length) return <p>No data</p>;
-
-//   const max = Math.max(...data.map(d => d.yield_prediction));
-//   const points = data.map((d, i) => {
-//     const x = (i / (data.length - 1)) * 300;
-//     const y = 100 - (d.yield_prediction / max) * 90;
-//     return `${x},${y}`;
-//   }).join(" ");
-
-//   return (
-//     <svg width="300" height="120">
-//       <polyline
-//         points={points}
-//         fill="none"
-//         stroke="#38A169"
-//         strokeWidth="3"
-//       />
-//     </svg>
-//   );
-// }
-
-// function Modal({ children, onClose }) {
-//   return (
-//     <div style={styles.modalBg}>
-//       <div style={styles.modal}>
-//         {children}
-//         <button onClick={onClose} style={styles.btn}>Close</button>
-//       </div>
-//     </div>
-//   );
-// }
-
-// function AdminPanel() {
-//   return (
-//     <section style={styles.section}>
-//       <h2>Admin Overview</h2>
-//       <p>• View all farmers</p>
-//       <p>• System analytics</p>
-//       <p>• Model performance monitoring</p>
-//     </section>
-//   );
-// }
-
-// /* ---------------- STYLES ---------------- */
-
+// /* ---------- INTERNAL CSS ---------- */
 // const styles = {
-//   page: { padding: 20, fontFamily: "Segoe UI", background: "#F7FAFC" },
-//   header: {
-//     background: "#1A202C",
+//   page: {
+//     minHeight: "100vh",
+//     background: "#f7fafc",
+//     padding: "20px",
+//     fontFamily: "Segoe UI",
+//     transition: "0.3s",
+//   },
+//   dark: {
+//     background: "#1a202c",
+//     color: "#edf2f7",
+//   },
+//   nav: {
+//     display: "flex",
+//     justifyContent: "space-between",
+//     marginBottom: "20px",
+//   },
+//   toggle: {
+//     marginRight: "10px",
+//   },
+//   logout: {
+//     background: "#e53e3e",
 //     color: "#fff",
-//     padding: 20,
-//     borderRadius: 12,
+//     padding: "6px 10px",
+//   },
+//   welcome: {
+//     marginBottom: "20px",
+//   },
+//   metrics: {
+//     display: "grid",
+//     gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+//     gap: "15px",
+//   },
+//   metric: {
+//     background: "#ffffff",
+//     padding: "15px",
+//     borderRadius: "10px",
+//     textAlign: "center",
+//     boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+//     transition: "0.3s",
+//   },
+//   card: {
+//     background: "#ffffff",
+//     padding: "20px",
+//     borderRadius: "12px",
+//     marginTop: "30px",
+//   },
+//   historyHeader: {
 //     display: "flex",
 //     justifyContent: "space-between",
 //   },
-//   cards: {
-//     display: "grid",
-//     gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-//     gap: 20,
-//     marginTop: 20,
-//   },
-//   card: {
-//     background: "#fff",
-//     padding: 20,
-//     borderRadius: 12,
-//     textAlign: "center",
-//   },
-//   big: { fontSize: 28, fontWeight: "bold", color: "#2F855A" },
-//   section: {
-//     marginTop: 30,
-//     background: "#fff",
-//     padding: 20,
-//     borderRadius: 12,
-//   },
-//   table: { width: "100%", borderCollapse: "collapse" },
-//   link: { color: "#3182CE", background: "none", border: "none", cursor: "pointer" },
-//   btn: {
-//     background: "#38A169",
+//   export: {
+//     background: "#2f855a",
 //     color: "#fff",
-//     border: "none",
-//     padding: "8px 14px",
-//     borderRadius: 8,
-//     cursor: "pointer",
+//     padding: "6px 10px",
 //   },
-//   modalBg: {
+//   table: {
+//     width: "100%",
+//     marginTop: "15px",
+//     borderCollapse: "collapse",
+//   },
+//   viewBtn: {
+//     background: "#3182ce",
+//     color: "#fff",
+//     padding: "5px 8px",
+//   },
+//   modalOverlay: {
 //     position: "fixed",
 //     inset: 0,
-//     background: "rgba(0,0,0,.5)",
+//     background: "rgba(0,0,0,0.6)",
 //     display: "flex",
-//     justifyContent: "center",
 //     alignItems: "center",
+//     justifyContent: "center",
 //   },
 //   modal: {
 //     background: "#fff",
-//     padding: 20,
-//     borderRadius: 12,
-//     width: "90%",
-//     maxWidth: 500,
+//     padding: "20px",
+//     borderRadius: "10px",
+//     width: "300px",
 //   },
-//   pre: {
-//     background: "#EDF2F7",
-//     padding: 10,
-//     borderRadius: 8,
-//     fontSize: 12,
+//   loader: {
+//     textAlign: "center",
+//     padding: "100px",
+//     fontSize: "20px",
 //   },
-//   center: { textAlign: "center", marginTop: 100 },
 // };
-
 
 
 
@@ -269,7 +284,6 @@ export default function DashboardPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  /* ---------------- AUTH CHECK ---------------- */
   useEffect(() => {
     if (!token) {
       router.push("/login");
@@ -289,7 +303,6 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* ---------------- HELPERS ---------------- */
   function authHeader() {
     return {
       headers: {
@@ -306,11 +319,9 @@ export default function DashboardPage() {
       rainfall: p.rainfall,
       temperature: p.temperature,
     }));
-
     const csv =
       "Date,Yield,Rainfall,Temperature\n" +
       rows.map(r => Object.values(r).join(",")).join("\n");
-
     const blob = new Blob([csv], { type: "text/csv" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -324,10 +335,10 @@ export default function DashboardPage() {
     <div style={{ ...styles.page, ...(darkMode && styles.dark) }}>
       {/* ---------- NAVBAR ---------- */}
       <nav style={styles.nav}>
-        <h2>🌱 Smart Farming AI</h2>
+        <h2 style={styles.logo}>🌱 Smart Farming AI</h2>
         <div>
           <button onClick={() => setDarkMode(!darkMode)} style={styles.toggle}>
-            {darkMode ? "☀️ Light" : "🌙 Dark"}
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
           </button>
           <button
             onClick={() => {
@@ -343,8 +354,8 @@ export default function DashboardPage() {
 
       {/* ---------- WELCOME ---------- */}
       <section style={styles.welcome}>
-        <h1>Welcome back, {user?.username}</h1>
-        <p>Your farm performance at a glance</p>
+        <h1 style={styles.welcomeText}>Welcome back, {user?.username} 👋</h1>
+        <p style={styles.subText}>Here’s a quick overview of your farm performance.</p>
       </section>
 
       {/* ---------- METRICS ---------- */}
@@ -355,26 +366,44 @@ export default function DashboardPage() {
         <Metric title="Yield Trend" value="+ Improving" />
       </section>
 
-      {/* ---------- CHART ---------- */}
+      {/* ---------- YIELD TREND CHART ---------- */}
       <section style={styles.card}>
-        <h3>Yield Trend</h3>
-        <svg width="100%" height="120">
-          {predictions.map((p, i) => (
-            <circle
-              key={i}
-              cx={20 + i * 40}
-              cy={100 - p.yield_prediction * 5}
-              r="4"
-              fill="#2f855a"
-            />
-          ))}
-        </svg>
+        <h3 style={styles.cardTitle}>Yield Trend</h3>
+        <div style={styles.chartContainer}>
+          <svg width="100%" height="150">
+            {predictions.map((p, i) => (
+              <circle
+                key={i}
+                cx={20 + i * 50}
+                cy={120 - p.yield_prediction * 5}
+                r="6"
+                fill="#2f855a"
+                style={{ transition: "0.3s" }}
+              />
+            ))}
+            {/* Optional: connect points with lines */}
+            {predictions.map((p, i) =>
+              i > 0 ? (
+                <line
+                  key={"line" + i}
+                  x1={20 + (i - 1) * 50}
+                  y1={120 - predictions[i - 1].yield_prediction * 5}
+                  x2={20 + i * 50}
+                  y2={120 - p.yield_prediction * 5}
+                  stroke="#2f855a"
+                  strokeWidth="2"
+                  style={{ transition: "0.3s" }}
+                />
+              ) : null
+            )}
+          </svg>
+        </div>
       </section>
 
-      {/* ---------- HISTORY ---------- */}
+      {/* ---------- PREDICTION HISTORY ---------- */}
       <section style={styles.card}>
         <div style={styles.historyHeader}>
-          <h3>Prediction History</h3>
+          <h3 style={styles.cardTitle}>Prediction History</h3>
           <button onClick={exportCSV} style={styles.export}>
             Export CSV
           </button>
@@ -390,7 +419,7 @@ export default function DashboardPage() {
           </thead>
           <tbody>
             {predictions.map(p => (
-              <tr key={p.id}>
+              <tr key={p.id} style={styles.row}>
                 <td>{new Date(p.created_at).toLocaleDateString()}</td>
                 <td>{p.yield_prediction}</td>
                 <td>
@@ -407,15 +436,15 @@ export default function DashboardPage() {
         </table>
       </section>
 
-      {/* ---------- MODAL ---------- */}
+      {/* ---------- PREDICTION DETAIL MODAL ---------- */}
       {selectedPrediction && (
         <div style={styles.modalOverlay} onClick={() => setSelectedPrediction(null)}>
           <div style={styles.modal} onClick={e => e.stopPropagation()}>
-            <h3>Prediction Detail</h3>
-            <p>Yield: {selectedPrediction.yield_prediction}</p>
-            <p>Rainfall: {selectedPrediction.rainfall}</p>
-            <p>Temperature: {selectedPrediction.temperature}</p>
-            <button onClick={() => setSelectedPrediction(null)}>Close</button>
+            <h3 style={{ marginBottom: "10px" }}>Prediction Detail</h3>
+            <p><strong>Yield:</strong> {selectedPrediction.yield_prediction}</p>
+            <p><strong>Rainfall:</strong> {selectedPrediction.rainfall}</p>
+            <p><strong>Temperature:</strong> {selectedPrediction.temperature}</p>
+            <button style={styles.closeBtn} onClick={() => setSelectedPrediction(null)}>Close</button>
           </div>
         </div>
       )}
@@ -423,94 +452,161 @@ export default function DashboardPage() {
   );
 }
 
-/* ---------- COMPONENTS ---------- */
+/* ---------- METRIC COMPONENT ---------- */
 const Metric = ({ title, value }) => (
   <div style={styles.metric}>
-    <h4>{title}</h4>
-    <p>{value}</p>
+    <h4 style={styles.metricTitle}>{title}</h4>
+    <p style={styles.metricValue}>{value}</p>
   </div>
 );
 
-/* ---------- INTERNAL CSS ---------- */
+/* ---------- STYLES ---------- */
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "#f7fafc",
+    background: "#f0f4f8",
     padding: "20px",
-    fontFamily: "Segoe UI",
-    transition: "0.3s",
+    fontFamily: "Inter, Segoe UI, sans-serif",
+    transition: "0.4s",
   },
   dark: {
     background: "#1a202c",
-    color: "#edf2f7",
+    color: "#e2e8f0",
   },
   nav: {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: "20px",
+    alignItems: "center",
+    marginBottom: "25px",
+  },
+  logo: {
+    fontWeight: "700",
+    color: "#2f855a",
   },
   toggle: {
     marginRight: "10px",
+    padding: "6px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    border: "none",
+    background: "#edf2f7",
+    transition: "0.3s",
   },
   logout: {
+    padding: "6px 12px",
+    borderRadius: "6px",
+    border: "none",
     background: "#e53e3e",
     color: "#fff",
-    padding: "6px 10px",
+    cursor: "pointer",
+    transition: "0.3s",
   },
   welcome: {
-    marginBottom: "20px",
+    marginBottom: "30px",
+    textAlign: "center",
+  },
+  welcomeText: {
+    fontSize: "28px",
+    fontWeight: "600",
+    marginBottom: "5px",
+  },
+  subText: {
+    fontSize: "16px",
+    color: "#4a5568",
   },
   metrics: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-    gap: "15px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: "20px",
+    marginBottom: "30px",
   },
   metric: {
     background: "#ffffff",
-    padding: "15px",
-    borderRadius: "10px",
+    padding: "20px",
+    borderRadius: "12px",
     textAlign: "center",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+    boxShadow: "0 6px 12px rgba(0,0,0,0.08)",
     transition: "0.3s",
+  },
+  metricTitle: {
+    fontSize: "14px",
+    color: "#718096",
+    marginBottom: "8px",
+  },
+  metricValue: {
+    fontSize: "24px",
+    fontWeight: "600",
+    color: "#2f855a",
   },
   card: {
     background: "#ffffff",
-    padding: "20px",
+    padding: "25px",
     borderRadius: "12px",
-    marginTop: "30px",
+    marginBottom: "30px",
+    boxShadow: "0 6px 12px rgba(0,0,0,0.08)",
+  },
+  cardTitle: {
+    fontSize: "20px",
+    fontWeight: "600",
+    marginBottom: "15px",
+  },
+  chartContainer: {
+    paddingTop: "10px",
   },
   historyHeader: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   export: {
     background: "#2f855a",
     color: "#fff",
-    padding: "6px 10px",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    border: "none",
+    transition: "0.3s",
   },
   table: {
     width: "100%",
     marginTop: "15px",
     borderCollapse: "collapse",
   },
+  row: {
+    transition: "0.3s",
+  },
   viewBtn: {
     background: "#3182ce",
     color: "#fff",
-    padding: "5px 8px",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    transition: "0.3s",
   },
   modalOverlay: {
     position: "fixed",
     inset: 0,
     background: "rgba(0,0,0,0.6)",
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
   },
   modal: {
     background: "#fff",
-    padding: "20px",
+    padding: "25px",
     borderRadius: "10px",
-    width: "300px",
+    width: "350px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+  },
+  closeBtn: {
+    marginTop: "15px",
+    padding: "6px 12px",
+    background: "#e53e3e",
+    color: "#fff",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
   },
   loader: {
     textAlign: "center",
