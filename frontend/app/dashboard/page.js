@@ -66,7 +66,7 @@ export default function DashboardPage() {
   
       <header style={styles.topNav}>
         <div>
-          <h2 style={styles.logo}>🌽 AI Yield Portal</h2>
+          <h2 style={styles.logo}>YIELD PORTAL</h2>
         </div>
         <div style={styles.topNavRight}>
           <span style={styles.userName}>{user?.username}</span>
