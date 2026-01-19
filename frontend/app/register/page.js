@@ -33,7 +33,7 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-wrapper">
-      {/* Internal CSS using a standard style tag for 100% compatibility */}
+      
       <style>{`
         .auth-wrapper {
           min-height: 100vh;
