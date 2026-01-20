@@ -196,7 +196,7 @@ export default function ResultsPage() {
           Run New Prediction
         </button>
         <button className="btn btn-print" style={{ background: '#16a34a' }} onClick={() => router.push("/dashboard")}>
-          Save to Dashboard
+          Save
         </button>
       </div>
     </div>
