@@ -57,3 +57,5 @@ def generate_recommendations(nitrogen, phosphorus, potassium, ph):
         recommendations.append("All nutrient levels are within optimal range. Maintain current practices.")
 
     return recommendations
+
+
