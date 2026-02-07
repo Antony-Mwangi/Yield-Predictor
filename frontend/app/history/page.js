@@ -124,7 +124,7 @@ export default function HistoryPage() {
         </button>
       </div>
 
-      {/* Analytics Summary */}
+      
       <div className="stats-overview">
         <div className="stat-card">
           <span>Total Predictions</span>

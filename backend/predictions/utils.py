@@ -1,61 +1,111 @@
+
+import os
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+
+DATA_PATH = r"c:\Users\ANTONY\Downloads\maize_yield_dataset_20000 (1).csv"
+
+
+try:
+    df = pd.read_csv(DATA_PATH)
+except FileNotFoundError:
+    raise FileNotFoundError(f"Dataset not found at {DATA_PATH}")
+except Exception as e:
+    raise Exception(f"Failed to load dataset: {e}")
+
+
+FEATURES = ["rainfall", "temperature", "nitrogen", "phosphorus", "potassium", "ph"]
+TARGET = "yield"
+
+X = df[FEATURES]
+y = df[TARGET]
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+
+model = RandomForestRegressor(n_estimators=200, random_state=42)
+model.fit(X_train, y_train)
+
+
+y_pred_test = model.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred_test))
+print(f"Random Forest trained! RMSE on test set: {rmse:.2f}")
+
+
 def predict_yield(rainfall, temperature, nitrogen, phosphorus, potassium, ph):
     """
-    Simple yield prediction formula
+    Predict crop yield based on input features.
     """
-    # Base yield
-    yield_est = 2.0  # tons/hectare
-
-    # Adjust by nutrients
-    yield_est += 0.05 * nitrogen
-    yield_est += 0.03 * phosphorus
-    yield_est += 0.02 * potassium
-
-    # Adjust by rainfall (ideal 100-150mm)
-    if 100 <= rainfall <= 150:
-        yield_est += 1.0
-    elif rainfall < 100:
-        yield_est -= 0.5
-    else:
-        yield_est -= 0.3
-
-    # Adjust by temperature (ideal 20-30°C)
-    if 20 <= temperature <= 30:
-        yield_est += 0.5
-    else:
-        yield_est -= 0.5
-
-    # Adjust by pH (ideal 6-7)
-    if 6 <= ph <= 7:
-        yield_est += 0.2
-    else:
-        yield_est -= 0.2
-
-    # Ensure yield is not negative
-    yield_est = max(yield_est, 0)
-
-    return round(yield_est, 2)
+    features = np.array([[rainfall, temperature, nitrogen, phosphorus, potassium, ph]])
+    try:
+        prediction = model.predict(features)[0]
+        return round(float(prediction), 2)
+    except Exception as e:
+        raise ValueError(f"Prediction failed: {e}")
 
 
-def generate_recommendations(nitrogen, phosphorus, potassium, ph):
+def generate_recommendations(predicted_yield, rainfall, temperature, nitrogen, phosphorus, potassium, ph):
     """
-    Rule-based recommendations based on soil/nutrient levels
+    Generate detailed recommendations based on predicted yield and individual input factors.
     """
     recommendations = []
 
-    if nitrogen < 30:
-        recommendations.append("Nitrogen is low. Consider applying N fertilizer (e.g., Urea).")
-    if phosphorus < 10:
-        recommendations.append("Phosphorus is low. Consider adding DAP fertilizer.")
-    if potassium < 10:
-        recommendations.append("Potassium is low. Consider using Muriate of Potash (KCl).")
-    if ph < 6:
-        recommendations.append("Soil is acidic. Consider liming to raise pH.")
-    if ph > 7.5:
-        recommendations.append("Soil is alkaline. Consider sulfur-based treatment to lower pH.")
+    # Soil nutrient recommendations
+    if nitrogen < 50:
+        recommendations.append("Increase nitrogen fertilization")
+    elif nitrogen > 200:
+        recommendations.append("Reduce nitrogen application to avoid soil degradation")
 
-    if not recommendations:
-        recommendations.append("All nutrient levels are within optimal range. Maintain current practices.")
+    if phosphorus < 20:
+        recommendations.append("Add phosphorus-rich fertilizer")
+    elif phosphorus > 80:
+        recommendations.append("Avoid excess phosphorus to prevent runoff")
+
+    if potassium < 100:
+        recommendations.append("Apply potassium fertilizer to improve crop health")
+    elif potassium > 250:
+        recommendations.append("Reduce potassium application to prevent soil imbalance")
+
+    # Soil pH recommendations
+    if ph < 5.8:
+        recommendations.append("Apply lime to raise soil pH")
+    elif ph > 7.2:
+        recommendations.append("Add sulfur or acidifying amendments to lower pH")
+
+    # Environmental recommendations
+    if rainfall < 500:
+        recommendations.append("Improve irrigation to compensate for low rainfall")
+    elif rainfall > 1000:
+        recommendations.append("Ensure proper drainage to avoid waterlogging")
+
+    if temperature < 20:
+        recommendations.append("Consider early-maturing crop varieties")
+    elif temperature > 30:
+        recommendations.append("Provide shade or mulching to protect crops from heat stress")
+
+    # Yield-based recommendations
+    if predicted_yield < 50:
+        recommendations.extend([
+            "Increase overall crop management attention",
+            "Test soil for deficiencies",
+            "Implement pest and disease control measures"
+        ])
+    elif predicted_yield < 100:
+        recommendations.extend([
+            "Maintain current practices and monitor crop health",
+            "Ensure irrigation and fertilization are adequate"
+        ])
+    else:
+        recommendations.extend([
+            "Maintain sustainable practices to preserve high yield",
+            "Optimize harvesting to prevent losses"
+        ])
 
     return recommendations
-
-
