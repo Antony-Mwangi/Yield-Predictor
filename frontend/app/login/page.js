@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -7,27 +8,37 @@ import { apiRequest } from "@/lib/api";
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState({ type: "", text: "" }); // Combined error/success state
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setStatus({ type: "", text: "" });
     setLoading(true);
 
-    const data = await apiRequest("/auth/login/", "POST", {
-      username,
-      password,
-    });
+    try {
+      const data = await apiRequest("/auth/login/", "POST", {
+        username,
+        password,
+      });
 
-    if (data.access) {
-      localStorage.setItem("token", data.access);
-      router.push("/dashboard");
-    } else {
-      setError("Invalid username or password");
+      if (data.access) {
+        localStorage.setItem("token", data.access);
+        setStatus({ type: "success", text: "Login successful! Opening dashboard..." });
+        
+        // Small delay to let the user see the success state
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1500);
+      } else {
+        setStatus({ type: "error", text: "Invalid username or password" });
+      }
+    } catch (err) {
+      setStatus({ type: "error", text: "Server connection failed. Please try again." });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -39,7 +50,7 @@ export default function LoginPage() {
           justify-content: center;
           align-items: center;
           background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-family: 'Inter', system-ui, sans-serif;
           padding: 20px;
         }
         .auth-card {
@@ -56,11 +67,36 @@ export default function LoginPage() {
           margin-bottom: 8px;
           font-size: 24px;
         }
-        .auth-card p.subtitle {
+        .subtitle {
           color: #666;
           margin-bottom: 24px;
           font-size: 14px;
         }
+
+        /* Status Message Styling */
+        .status-box {
+          padding: 12px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          font-size: 14px;
+          font-weight: 500;
+          animation: slideDown 0.3s ease;
+        }
+        .status-box.success {
+          background-color: #dcfce7;
+          color: #166534;
+          border: 1px solid #bbf7d0;
+        }
+        .status-box.error {
+          background-color: #fef2f2;
+          color: #dc2626;
+          border: 1px solid #fecaca;
+        }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         .form-flex {
           display: flex;
           flex-direction: column;
@@ -79,18 +115,11 @@ export default function LoginPage() {
           border-radius: 8px;
           font-size: 16px;
           outline: none;
-          transition: border-color 0.2s;
+          transition: all 0.2s;
         }
         .form-flex input:focus {
           border-color: #22c55e;
-        }
-        .error-msg {
-          color: #dc2626;
-          background: #fef2f2;
-          padding: 10px;
-          border-radius: 6px;
-          font-size: 13px;
-          margin-top: 5px;
+          box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
         }
         .login-button {
           padding: 12px;
@@ -102,6 +131,7 @@ export default function LoginPage() {
           font-weight: bold;
           cursor: pointer;
           transition: background 0.2s;
+          margin-top: 10px;
         }
         .login-button:hover {
           background-color: #16a34a;
@@ -111,7 +141,7 @@ export default function LoginPage() {
           cursor: not-allowed;
         }
         .footer-text {
-          margin-top: 20px;
+          margin-top: 24px;
           font-size: 14px;
           color: #4b5563;
         }
@@ -119,6 +149,9 @@ export default function LoginPage() {
           color: #16a34a;
           cursor: pointer;
           font-weight: bold;
+          text-decoration: none;
+        }
+        .register-link:hover {
           text-decoration: underline;
         }
       `}</style>
@@ -126,6 +159,13 @@ export default function LoginPage() {
       <div className="auth-card">
         <h2>Welcome Back</h2>
         <p className="subtitle">Login to access your farming assistant</p>
+
+        {/* Status Message Display */}
+        {status.text && (
+          <div className={`status-box ${status.type}`}>
+            {status.text}
+          </div>
+        )}
 
         <form onSubmit={handleLogin} className="form-flex">
           <label className="input-label">Username</label>
@@ -144,8 +184,6 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
-          {error && <div className="error-msg">{error}</div>}
 
           <button type="submit" className="login-button" disabled={loading}>
             {loading ? "Logging in..." : "Login"}

@@ -1,207 +1,278 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { 
+  BookOpen, 
+  Shovel, 
+  FlaskConical, 
+  ThermometerSun, 
+  Droplets, 
+  CheckCircle2, 
+  ArrowRight,
+  Info,
+  ChevronRight,
+  Microscope
+} from "lucide-react";
 
 export default function ResourcesPage() {
   const router = useRouter();
 
   return (
-    <div className="resources-container">
-      <style>{`
-        .resources-container {
-          max-width: 1000px;
-          margin: 0 auto;
-          padding: 40px 20px;
-          font-family: 'Inter', sans-serif;
-          color: #333333ff;
-          line-height: 1.6;
-        }
-
-        .hero-banner {
-          background: #166534;
-          color: white;
-          padding: 60px 40px;
-          border-radius: 24px;
-          margin-bottom: 50px;
-          text-align: center;
-        }
-
-        .hero-banner h1 { font-size: 2.5rem; margin-bottom: 15px; }
-        .hero-banner p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
-
-        .resource-section { margin-bottom: 60px; }
-        .section-title {
-          font-size: 1.8rem;
-          color: #166534;
-          border-left: 5px solid #22c55e;
-          padding-left: 15px;
-          margin-bottom: 30px;
-        }
-
-        /* Guide Cards */
-        .guide-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 25px;
-        }
-
-        .step-card {
-          background: #f9fafb;
-          padding: 30px;
-          border-radius: 16px;
-          border: 1px solid #e5e7eb;
-          transition: 0.3s;
-        }
-
-        .step-card:hover { border-color: #22c55e; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-
-        .step-num {
-          background: #22c55e;
-          color: white;
-          width: 35px;
-          height: 35px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          font-weight: bold;
-          margin-bottom: 15px;
-        }
-
-        /* NPK Reference Table */
-        .reference-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-          background: white;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .reference-table th { background: #f3f4f6; padding: 15px; text-align: left; font-size: 14px; }
-        .reference-table td { padding: 15px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
-
-        .tag {
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-size: 12px;
-          font-weight: bold;
-        }
-        .tag-n { background: #dbeafe; color: #1e40af; }
-        .tag-p { background: #fef3c7; color: #92400e; }
-        .tag-k { background: #ede9fe; color: #5b21b6; }
-
-        .cta-box {
-          background: #ecfdf5;
-          padding: 40px;
-          border-radius: 20px;
-          text-align: center;
-          border: 2px dashed #10b981;
-        }
-
-        @media (max-width: 600px) {
-          .hero-banner { padding: 40px 20px; }
-          .section-title { font-size: 1.4rem; }
-        }
-      `}</style>
-
-      <section className="hero-banner">
-        <h1>Farmer's Knowledge Hub</h1>
-        <p>Master the science of soil testing and climate tracking to get the most out of your AI predictions.</p>
+    <div style={styles.container}>
+      
+      <section style={styles.heroBanner}>
+        <div style={styles.heroContent}>
+          <div style={styles.heroBadge}>
+            <BookOpen size={16} /> Knowledge Base
+          </div>
+          <h1 style={styles.heroTitle}>Farmer's Knowledge Hub</h1>
+          <p style={styles.heroSubtitle}>
+            Master the science of soil testing and climate tracking to improve the accuracy of your AI yield predictions.
+          </p>
+        </div>
       </section>
 
-    
-      <section className="resource-section">
-        <h2 className="section-title">How to Take a Soil Sample</h2>
-        <p>Proper sampling is the foundation of accurate yield prediction. Follow this "Zig-Zag" method for the best results.</p>
+      
+      <section style={styles.resourceSection}>
+        <div style={styles.sectionHeader}>
+          <div style={styles.iconBox}><Shovel size={24} color="#166534" /></div>
+          <h2 style={styles.sectionTitle}>Precision Soil Sampling</h2>
+        </div>
         
+        <p style={styles.sectionDesc}>
+          Proper sampling is the foundation of accurate prediction. We recommend the <strong>"Zig-Zag" method</strong> to ensure your data represents the entire field.
+        </p>
+
         
 
-        <div className="guide-grid">
-          <div className="step-card">
-            <div className="step-num">1</div>
-            <h3>Clear the Surface</h3>
-            <p>Remove weeds, rocks, and organic debris from the surface of the 10-15 spots across your field.</p>
+        <div style={styles.guideGrid}>
+          <div style={styles.stepCard}>
+            <div style={styles.stepNum}>01</div>
+            <h3 style={styles.stepTitle}>Clear the Surface</h3>
+            <p style={styles.stepText}>Remove weeds, rocks, and organic debris from 10-15 random spots across your field.</p>
           </div>
-          <div className="step-card">
-            <div className="step-num">2</div>
-            <h3>Dig V-Shaped Holes</h3>
-            <p>Dig 15-20cm deep (the "plough layer"). Take a thin slice from the side of the hole.</p>
+          <div style={styles.stepCard}>
+            <div style={styles.stepNum}>02</div>
+            <h3 style={styles.stepTitle}>Dig V-Shaped Holes</h3>
+            <p style={styles.stepText}>Dig 15-20cm deep (the "plough layer"). Take a thin 2cm slice from the side of the hole.</p>
           </div>
-          <div className="step-card">
-            <div className="step-num">3</div>
-            <h3>Mix and Dry</h3>
-            <p>Mix all collected slices in a clean plastic bucket. Air-dry the composite sample before sending it to the lab.</p>
+          <div style={styles.stepCard}>
+            <div style={styles.stepNum}>03</div>
+            <h3 style={styles.stepTitle}>Mix and Dry</h3>
+            <p style={styles.stepText}>Combine all slices in a clean plastic bucket. Air-dry the sample before sending it to the lab.</p>
           </div>
         </div>
       </section>
 
       
-      <section className="resource-section">
-        <h2 className="section-title">Understanding NPK Values</h2>
-        <p>Maize requires different nutrients at different stages. Use this table to understand your AI input values.</p>
-        
-        
+      <section style={styles.resourceSection}>
+        <div style={styles.sectionHeader}>
+          <div style={styles.iconBox}><FlaskConical size={24} color="#166534" /></div>
+          <h2 style={styles.sectionTitle}>Understanding NPK Values</h2>
+        </div>
+        <p style={styles.sectionDesc}>Nutrient balance is critical. Use this guide to identify signs of deficiency in your maize crop.</p>
 
-        <table className="reference-table">
-          <thead>
-            <tr>
-              <th>Nutrient</th>
-              <th>Role in Maize Growth</th>
-              <th>Deficiency Sign</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span className="tag tag-n">Nitrogen (N)</span></td>
-              <td>Rapid leaf growth and stalk strength.</td>
-              <td>Yellowing starting at the leaf tip and moving down the midrib.</td>
-            </tr>
-            <tr>
-              <td><span className="tag tag-p">Phosphorus (P)</span></td>
-              <td>Root development and early seedling vigor.</td>
-              <td>Leaves turning purple or dark blue-green.</td>
-            </tr>
-            <tr>
-              <td><span className="tag tag-k">Potassium (K)</span></td>
-              <td>Water regulation and disease resistance.</td>
-              <td>Browning/firing of the outer leaf edges.</td>
-            </tr>
-          </tbody>
-        </table>
+        <div style={styles.tableWrapper}>
+          <table style={styles.referenceTable}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Nutrient</th>
+                <th style={styles.th}>Role in Maize Growth</th>
+                <th style={styles.th}>Deficiency Sign</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={styles.td}><span style={{...styles.tag, ...styles.tagN}}>Nitrogen (N)</span></td>
+                <td style={styles.td}>Rapid leaf growth and stalk strength.</td>
+                <td style={styles.td}>Yellowing starting at the leaf tip moving down the midrib.</td>
+              </tr>
+              <tr>
+                <td style={styles.td}><span style={{...styles.tag, ...styles.tagP}}>Phosphorus (P)</span></td>
+                <td style={styles.td}>Root development and early seedling vigor.</td>
+                <td style={styles.td}>Leaves turning purple or dark blue-green.</td>
+              </tr>
+              <tr>
+                <td style={styles.td}><span style={{...styles.tag, ...styles.tagK}}>Potassium (K)</span></td>
+                <td style={styles.td}>Water regulation and disease resistance.</td>
+                <td style={styles.td}>Browning or "firing" of the outer leaf edges.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       
-      <section className="resource-section">
-        <h2 className="section-title">Rainfall & Temperature</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'center' }}>
-          <div style={{ flex: 1, minWidth: '300px' }}>
-            <p>Our AI uses <strong>Annual Rainfall</strong> as a key predictor for grain weight. For maize, the timing of rain is just as important as the amount.</p>
-            <ul>
-              <li><strong>Critical Period:</strong> Two weeks before and after silking.</li>
-              <li><strong>Temperature Stress:</strong> Temperatures above 35°C during pollination can significantly reduce yield.</li>
-            </ul>
+      <section style={styles.resourceSection}>
+        <div style={styles.sectionHeader}>
+          <div style={styles.iconBox}><ThermometerSun size={24} color="#166534" /></div>
+          <h2 style={styles.sectionTitle}>Climate & Environmental Stress</h2>
+        </div>
+        <div style={styles.splitGrid}>
+          <div style={styles.textCol}>
+            <p style={styles.sectionDesc}>
+              Our AI analyzes <strong>Annual Rainfall</strong> as a primary driver for grain weight. However, timing is the ultimate variable.
+            </p>
+            <div style={styles.bulletList}>
+              <div style={styles.bulletItem}>
+                <Droplets size={18} color="#22c55e" />
+                <span><strong>Critical Period:</strong> Water stress 2 weeks before and after silking causes the most yield loss.</span>
+              </div>
+              <div style={styles.bulletItem}>
+                <ThermometerSun size={18} color="#f59e0b" />
+                <span><strong>Heat Stress:</strong> Consistent temperatures above 35°C during pollination reduce kernel set.</span>
+              </div>
+            </div>
           </div>
-          <div style={{ flex: 1, minWidth: '300px', background: '#fffbeb', padding: '25px', borderRadius: '12px', border: '1px solid #fef3c7' }}>
-            <h4 style={{ color: '#92400e', margin: '0 0 10px 0' }}>💡 Rain Gauge Tip</h4>
-            <p style={{ fontSize: '14px', margin: 0 }}>If you don't have a digital station, place a simple rain gauge 1 meter above the ground away from buildings or trees to get the most accurate local data.</p>
+          <div style={styles.infoNote}>
+            <div style={styles.noteHeader}>
+              <Info size={18} />
+              <h4 style={{margin: 0}}>Field Measurement Tip</h4>
+            </div>
+            <p style={styles.noteText}>
+              Place a manual rain gauge 1 meter above ground level, away from trees or buildings, to capture data that reflects your specific micro-climate.
+            </p>
           </div>
         </div>
       </section>
 
       
-      <div className="cta-box">
-        <h3>Ready to test your soil data?</h3>
-        <p>Now that you know how to collect your metrics, run a prediction to see your estimated harvest.</p>
-        <button 
-          className="btn" 
-          style={{ background: '#166534', color: 'white', padding: '12px 30px', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', marginTop: '15px' }}
-          onClick={() => router.push("/predict")}
-        >
-          Go to Predictor
+      <div style={styles.ctaBox}>
+        <div style={styles.ctaContent}>
+          <h3 style={styles.ctaTitle}>Ready to analyze your data?</h3>
+          <p style={styles.ctaSubtitle}>Apply your soil metrics to our AI model for an instant harvest forecast.</p>
+        </div>
+        <button style={styles.ctaBtn} onClick={() => router.push("/predict")}>
+          Run Prediction <ArrowRight size={18} />
         </button>
       </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    maxWidth: "1000px",
+    margin: "0 auto",
+    padding: "40px 20px",
+    fontFamily: "'Inter', system-ui, sans-serif",
+    color: "#1e293b",
+    lineHeight: "1.6",
+  },
+  heroBanner: {
+    background: "linear-gradient(135deg, #166534 0%, #15803d 100%)",
+    color: "white",
+    padding: "80px 40px",
+    borderRadius: "32px",
+    marginBottom: "60px",
+    textAlign: "center",
+    position: "relative",
+    overflow: "hidden",
+  },
+  heroBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    padding: "6px 14px",
+    borderRadius: "99px",
+    fontSize: "14px",
+    fontWeight: "600",
+    marginBottom: "20px",
+  },
+  heroTitle: { fontSize: "3rem", fontWeight: "800", margin: "0 0 16px 0", letterSpacing: "-1px" },
+  heroSubtitle: { fontSize: "1.15rem", opacity: 0.9, maxWidth: "600px", margin: "0 auto" },
+  
+  resourceSection: { marginBottom: "80px" },
+  sectionHeader: { display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" },
+  iconBox: {
+    width: "48px",
+    height: "48px",
+    backgroundColor: "#f0fdf4",
+    borderRadius: "12px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sectionTitle: { fontSize: "1.75rem", fontWeight: "800", color: "#0f172a", margin: 0 },
+  sectionDesc: { fontSize: "1.1rem", color: "#475569", marginBottom: "32px", maxWidth: "800px" },
+
+  guideGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "24px",
+    marginTop: "32px",
+  },
+  stepCard: {
+    backgroundColor: "#ffffff",
+    padding: "32px",
+    borderRadius: "20px",
+    border: "1px solid #e2e8f0",
+    transition: "all 0.3s ease",
+  },
+  stepNum: {
+    fontSize: "2rem",
+    fontWeight: "900",
+    color: "#e2e8f0",
+    marginBottom: "12px",
+    fontFamily: "serif",
+  },
+  stepTitle: { 
+    fontSize: "1.25rem", 
+    fontWeight: "700",
+    color: "#166534", 
+    marginBottom: "12px" },
+
+    
+  stepText: { fontSize: "0.95rem", color: "#64748b", margin: 0 },
+
+  tableWrapper: {
+    borderRadius: "16px",
+    border: "1px solid #e2e8f0",
+    overflow: "hidden",
+    boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)",
+  },
+  referenceTable: { width: "100%", borderCollapse: "collapse", background: "white" },
+  th: { backgroundColor: "#f8fafc", padding: "16px", textAlign: "left", fontSize: "13px", fontWeight: "700", textTransform: "uppercase", color: "#64748b", borderBottom: "1px solid #e2e8f0" },
+  td: { padding: "20px 16px", fontSize: "14px", borderBottom: "1px solid #f1f5f9" },
+  
+  tag: { padding: "4px 10px", borderRadius: "6px", fontSize: "12px", fontWeight: "700" },
+  tagN: { backgroundColor: "#dbeafe", color: "#1e40af" },
+  tagP: { backgroundColor: "#fef3c7", color: "#92400e" },
+  tagK: { backgroundColor: "#ede9fe", color: "#5b21b6" },
+
+  splitGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start" },
+  bulletList: { display: "grid", gap: "16px" },
+  bulletItem: { display: "flex", gap: "12px", alignItems: "start", fontSize: "15px" },
+  
+  infoNote: { backgroundColor: "#fffbeb", padding: "24px", borderRadius: "16px", border: "1px solid #fef3c7" },
+  noteHeader: { display: "flex", alignItems: "center", gap: "8px", color: "#92400e", marginBottom: "12px" },
+  noteText: { fontSize: "14px", color: "#78350f", margin: 0, lineHeight: "1.5" },
+
+  ctaBox: {
+    backgroundColor: "#ffffff",
+    padding: "48px",
+    borderRadius: "24px",
+    border: "2px solid #10b981",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "32px",
+    flexWrap: "wrap",
+  },
+  ctaTitle: { fontSize: "1.5rem", fontWeight: "800", margin: "0 0 8px 0" },
+  ctaSubtitle: { fontSize: "1rem", color: "#64748b", margin: 0 },
+  ctaBtn: {
+    backgroundColor: "#166534",
+    color: "white",
+    padding: "16px 32px",
+    border: "none",
+    borderRadius: "12px",
+    cursor: "pointer",
+    fontWeight: "700",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    transition: "transform 0.2s",
+  }
+};
