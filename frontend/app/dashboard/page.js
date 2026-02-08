@@ -13,7 +13,6 @@ import {
   Moon,
   Sprout,
   BarChart3,
-  Thermometer,
   CloudRain
 } from "lucide-react";
 
@@ -27,7 +26,7 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 
-
+// 1. STYLES DEFINED AT TOP (Fixes ReferenceError)
 const styles = {
   container: { display: "flex", flexDirection: "column", minHeight: "100vh", fontFamily: "'Inter', system-ui, sans-serif" },
   lightTheme: {
@@ -126,6 +125,31 @@ export default function DashboardPage() {
     .finally(() => setLoading(false));
   }, [router]);
 
+  // 2. EXPORT REPORT LOGIC
+  const handleExport = () => {
+    if (predictions.length === 0) {
+      alert("No data available to export.");
+      return;
+    }
+    const headers = ["Date", "Yield (t/ha)", "Rainfall (mm)", "Pesticides", "Temp"];
+    const rows = predictions.map(p => [
+      new Date(p.created_at).toLocaleDateString(),
+      p.yield_prediction,
+      p.rainfall,
+      p.pesticides,
+      p.avg_temp
+    ]);
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `yield_report_${new Date().getTime()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
@@ -174,7 +198,9 @@ export default function DashboardPage() {
         <main style={styles.content}>
           <div style={styles.headerRow}>
             <h1 style={{ ...styles.pageTitle, ...theme.text }}>Insights Overview</h1>
-            <button style={styles.exportBtn}><Download size={16} /> Export Report</button>
+            <button style={styles.exportBtn} onClick={handleExport}>
+                <Download size={16} /> Export Report
+            </button>
           </div>
 
           <section style={styles.statsGrid}>
@@ -194,7 +220,6 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          
           <section style={{ ...styles.graphWrapper, ...theme.card }}>
             <h3 style={{ ...styles.tableTitle, ...theme.text }}>Yield Production Trend</h3>
             <div style={{ width: '100%', height: 300 }}>
@@ -216,7 +241,6 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          
           <section style={{ ...styles.tableWrapper, ...theme.card }}>
             <h3 style={{ ...styles.tableTitle, ...theme.text }}>Recent History</h3>
             <table style={styles.table}>
@@ -250,11 +274,11 @@ export default function DashboardPage() {
           <div style={{ ...styles.modal, ...theme.card }} onClick={e => e.stopPropagation()}>
             <h3 style={{ ...theme.text, marginBottom: '24px' }}>Prediction Detail</h3>
             <div style={styles.modalGrid}>
-              <div style={styles.modalItem}>
+              <div>
                 <div style={styles.modalIconLabel}><BarChart3 size={14} /> <span style={styles.modalLabel}>Yield</span></div>
                 <span style={{ ...styles.modalValue, color: '#2F855A' }}>{selectedPrediction.yield_prediction} t/ha</span>
               </div>
-              <div style={styles.modalItem}>
+              <div>
                 <div style={styles.modalIconLabel}><CloudRain size={14} /> <span style={styles.modalLabel}>Rainfall</span></div>
                 <span style={{ ...styles.modalValue, ...theme.text }}>{selectedPrediction.rainfall} mm</span>
               </div>
