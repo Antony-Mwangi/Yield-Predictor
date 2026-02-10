@@ -138,7 +138,7 @@ export default function ResultsPage() {
             <RefreshCw size={18} /> Try Again
           </button>
           <button style={styles.primaryBtn} onClick={() => router.push("/dashboard")}>
-            <LayoutDashboard size={18} /> Dashboard
+            <LayoutDashboard size={18} /> Save to Dashboard
           </button>
         </footer>
       </div>
