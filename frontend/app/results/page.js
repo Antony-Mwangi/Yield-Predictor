@@ -135,7 +135,7 @@ export default function ResultsPage() {
 
         <footer style={styles.footer}>
           <button style={styles.secondaryBtn} onClick={() => router.push("/predict")}>
-            <RefreshCw size={18} /> Try Again
+            <RefreshCw size={18} /> Run New Analysis
           </button>
           <button style={styles.primaryBtn} onClick={() => router.push("/dashboard")}>
             <LayoutDashboard size={18} /> Save to Dashboard
