@@ -41,7 +41,7 @@ print(f"Random Forest trained! RMSE on test set: {rmse:.2f}")
 
 def predict_yield(rainfall, temperature, nitrogen, phosphorus, potassium, ph):
     
-    Predict crop yield based on input features.
+    #Predict crop yield based on input features.
     
     features = np.array([[rainfall, temperature, nitrogen, phosphorus, potassium, ph]])
     try:
@@ -52,9 +52,9 @@ def predict_yield(rainfall, temperature, nitrogen, phosphorus, potassium, ph):
 
 
 def generate_recommendations(predicted_yield, rainfall, temperature, nitrogen, phosphorus, potassium, ph):
-    """
-    Generate detailed recommendations based on predicted yield and individual input factors.
-    """
+    
+    #Generate detailed recommendations based on predicted yield and individual input factors.
+    
     recommendations = []
 
     # Soil nutrient recommendations
