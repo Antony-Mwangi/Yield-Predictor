@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 
-DATA_PATH = r"c:\Users\ANTONY\Downloads\maize_yield_dataset_20000 (1).csv"
+DATA_PATH = r"c:\Users\ANTONY\Desktop\maize_yield_dataset_20000 (1).csv"
 
 
 try:
@@ -40,9 +40,9 @@ print(f"Random Forest trained! RMSE on test set: {rmse:.2f}")
 
 
 def predict_yield(rainfall, temperature, nitrogen, phosphorus, potassium, ph):
-    """
+    
     Predict crop yield based on input features.
-    """
+    
     features = np.array([[rainfall, temperature, nitrogen, phosphorus, potassium, ph]])
     try:
         prediction = model.predict(features)[0]
