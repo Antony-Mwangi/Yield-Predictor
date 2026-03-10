@@ -122,7 +122,7 @@ export default function HomePage() {
         <div style={styles.splitGrid}>
           <div style={styles.textCol}>
             <h2 style={styles.scienceH2}>Science-Backed Results</h2>
-            <p style={styles.scienceP}>Our application isn't just a calculator; it's a decision-support system designed to increase ROI.</p>
+            <p style={styles.scienceP}>Our application isn't just a calculator; its a decision-support system designed to increase ROI.</p>
             <ul style={styles.scienceList}>
               <li style={styles.scienceListItem}>
                 <CheckCircle size={20} color="#22c55e" />
