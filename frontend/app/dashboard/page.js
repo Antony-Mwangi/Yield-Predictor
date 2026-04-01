@@ -52,7 +52,7 @@ const styles = {
   logoText: { fontSize: "18px", fontWeight: "800", letterSpacing: "1px", margin: 0 },
   topNavRight: { display: "flex", alignItems: "center", gap: "20px" },
   userName: { fontSize: "14px", fontWeight: "600" },
-  logoutBtn: { display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", background: "#fee2e2", color: "#b91c1c", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "600" },
+  // logoutBtn: { display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", background: "#fee2e2", color: "#b91c1c", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "600" },
   mainArea: { display: "flex", flex: 1 },
   sidebar: { width: "260px", padding: "30px 16px" },
   sidebarList: { listStyle: "none", padding: 0, margin: 0 },
@@ -177,9 +177,9 @@ export default function DashboardPage() {
         </div>
         <div style={styles.topNavRight}>
           <span style={{ ...styles.userName, ...theme.text }}>{user?.username}</span>
-          <button style={styles.logoutBtn} onClick={() => { localStorage.removeItem("token"); router.push("/login"); }}>
-            <LogOut size={16} /> Logout
-          </button>
+          {/* <button style={styles.logoutBtn} onClick={() => { localStorage.removeItem("token"); router.push("/login"); }}>
+            <LogOut size={16} />
+          </button> */}
         </div>
       </header>
 
